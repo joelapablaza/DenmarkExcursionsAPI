@@ -48,6 +48,12 @@ namespace DenmarkExcursionsAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWalkDifficultyAsync(AddWalkDifficultyRequest walkDifficultyRequest)
         {
+            // Validation
+            if (!ValidateAddWalkDifficultyAsync(walkDifficultyRequest))
+            {
+                return BadRequest(ModelState);
+            }
+
             // Convert DTO to Doman model
             var walkDifficulty = new Models.Domain.WalkDifficulty()
             {
@@ -68,6 +74,12 @@ namespace DenmarkExcursionsAPI.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateWalkDifficultyAsync(Guid id, UpdateWalkDifficultyRequest updateWalkDifficultyRequest)
         {
+            // Validate
+            if(! (ValidateUpdateWalkDifficultyAsync(updateWalkDifficultyRequest)))
+            {
+                return BadRequest(ModelState);
+            }
+
             // Convert DTO to Doman model
             var walkDifficulty = new Models.Domain.WalkDifficulty()
             {
@@ -99,6 +111,54 @@ namespace DenmarkExcursionsAPI.Controllers
 
             return Ok(walkDifficultyDTO);
         }
+
+        #region Private methods
+
+        private bool ValidateAddWalkDifficultyAsync(AddWalkDifficultyRequest walkDifficultyRequest)
+        {
+            if (walkDifficultyRequest == null)
+            {
+                ModelState.AddModelError(nameof(walkDifficultyRequest),
+                    $"{nameof(walkDifficultyRequest)} is required");
+            }
+
+            if (string.IsNullOrWhiteSpace(walkDifficultyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(walkDifficultyRequest.Code),
+                    $"{nameof(walkDifficultyRequest.Code)} is required");
+            }
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool ValidateUpdateWalkDifficultyAsync(UpdateWalkDifficultyRequest updateDifficultyRequest)
+        {
+            if (updateDifficultyRequest == null)
+            {
+                ModelState.AddModelError(nameof(updateDifficultyRequest),
+                    $"{nameof(updateDifficultyRequest)} is required");
+            }
+
+            if (string.IsNullOrWhiteSpace(updateDifficultyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(updateDifficultyRequest.Code),
+                    $"{nameof(updateDifficultyRequest.Code)} is required");
+            }
+
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
 
     }
 }
