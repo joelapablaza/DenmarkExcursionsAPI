@@ -76,7 +76,9 @@ namespace DenmarkExcursionsAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWalkAsync([FromBody] AddWalkRequest addWalkRequest)
         {
-            // Validate
+            // Implicit Validation with FluentValidation
+
+            // Validate Ids
             if (!(await ValidateAddWalkAsync(addWalkRequest)))
             {
                 return BadRequest(ModelState);
@@ -110,7 +112,9 @@ namespace DenmarkExcursionsAPI.Controllers
         public async Task<IActionResult> UpdateWalkAsync([FromRoute] Guid id, [FromBody] UpdateWalkRequest updateWalkRequest)
         {
 
-            // Validate
+            // Implicit Validation with FluentValidation
+
+            // Validate Ids
             if (! (await ValidateUpdateWalkAsync(updateWalkRequest)))
             {
                 return BadRequest(ModelState);
@@ -171,25 +175,6 @@ namespace DenmarkExcursionsAPI.Controllers
 
         private async Task<bool> ValidateAddWalkAsync(AddWalkRequest addWalkRequest)
         {
-            if (addWalkRequest == null)
-            {
-                ModelState.AddModelError(nameof(addWalkRequest),
-                    $"Data is required");
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(addWalkRequest.Name))
-            {
-                ModelState.AddModelError(nameof(addWalkRequest.Name),
-                   $"{nameof(addWalkRequest.Name)} cannot be empty");
-            }
-
-            if (addWalkRequest.Length <= 0)
-            {
-                ModelState.AddModelError(nameof(addWalkRequest.Length),
-                   $"{nameof(addWalkRequest.Length)} should be greater than zero");
-            }
-
             var region = await _regionRepository.GetAsync(addWalkRequest.RegionId);
             if (region == null)
             {
@@ -214,25 +199,6 @@ namespace DenmarkExcursionsAPI.Controllers
 
         private async Task<bool> ValidateUpdateWalkAsync(UpdateWalkRequest updateWalkRequest)
         {
-            if (updateWalkRequest == null)
-            {
-                ModelState.AddModelError(nameof(updateWalkRequest),
-                    $"Data is required");
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(updateWalkRequest.Name))
-            {
-                ModelState.AddModelError(nameof(updateWalkRequest.Name),
-                   $"{nameof(updateWalkRequest.Name)} cannot be empty");
-            }
-
-            if (updateWalkRequest.Length <= 0)
-            {
-                ModelState.AddModelError(nameof(updateWalkRequest.Length),
-                   $"{nameof(updateWalkRequest.Length)} should be greater than zero");
-            }
-
             var region = await _regionRepository.GetAsync(updateWalkRequest.RegionId);
             if (region == null)
             {
