@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DenmarkExcursionsAPI.Models.DTO;
 using DenmarkExcursionsAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DenmarkExcursionsAPI.Controllers
@@ -19,6 +20,7 @@ namespace DenmarkExcursionsAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetAllRegionsAsync()
         {
             var regions = await _regionRepository.GetAllAsync();
@@ -50,6 +52,7 @@ namespace DenmarkExcursionsAPI.Controllers
         [HttpGet]
         [Route("{id:guid}")]
         [ActionName("GetRegionAsync")]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetRegionAsync(Guid id)
         {
             var region = await _regionRepository.GetAsync(id);
@@ -65,6 +68,7 @@ namespace DenmarkExcursionsAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> AddRegionAsync(AddRegionRequest addRegionRequest)
         {
             // Implicit Validation with FluentValidation
@@ -99,6 +103,7 @@ namespace DenmarkExcursionsAPI.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> DeleteRegionAsync(Guid id)
         {
             // Delete region from database
@@ -125,6 +130,8 @@ namespace DenmarkExcursionsAPI.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
+
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> UpdateRegionAsync([FromRoute] Guid id, [FromBody] UpdateRegionRequest updateRegionRequest)
         {
             // Implicit Validation with FluentValidation

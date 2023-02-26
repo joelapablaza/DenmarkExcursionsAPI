@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using DenmarkExcursionsAPI.Models.DTO;
 using DenmarkExcursionsAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DenmarkExcursionsAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+
     public class WalksController : Controller
     {
         private readonly IWalkRepository _walkRepository;
@@ -24,6 +26,7 @@ namespace DenmarkExcursionsAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetAllWalksAsync()
         {
             var walks = await _walkRepository.GetAllAsync();
@@ -50,6 +53,7 @@ namespace DenmarkExcursionsAPI.Controllers
         [HttpGet]
         [Route("{id:guid}")]
         [ActionName("GetWalkAsync")]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetWalkAsync(Guid id)
         {
             // Get de Walk with the id
@@ -74,6 +78,7 @@ namespace DenmarkExcursionsAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> AddWalkAsync([FromBody] AddWalkRequest addWalkRequest)
         {
             // Implicit Validation with FluentValidation
@@ -109,6 +114,7 @@ namespace DenmarkExcursionsAPI.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> UpdateWalkAsync([FromRoute] Guid id, [FromBody] UpdateWalkRequest updateWalkRequest)
         {
 
@@ -150,6 +156,7 @@ namespace DenmarkExcursionsAPI.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> DeleteWalkAsync(Guid id)
         {
             var walk = await _walkRepository.DeleteAsync(id);

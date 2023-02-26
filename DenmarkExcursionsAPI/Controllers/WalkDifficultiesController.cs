@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using DenmarkExcursionsAPI.Models.DTO;
 using DenmarkExcursionsAPI.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace DenmarkExcursionsAPI.Controllers
 {
@@ -19,6 +21,7 @@ namespace DenmarkExcursionsAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetAllWalkDifficulties()
         {
             var walkDifficulties = await _walkDifficultyRepository.GetAllAsync();
@@ -30,6 +33,7 @@ namespace DenmarkExcursionsAPI.Controllers
         [HttpGet]
         [Route("{id:guid}")]
         [ActionName("GetWalkDifficultyAsync")]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetWalkDifficultyAsync(Guid id)
         {
             var walkDifficulty = await _walkDifficultyRepository.GetAsync(id);
@@ -46,6 +50,7 @@ namespace DenmarkExcursionsAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> AddWalkDifficultyAsync(AddWalkDifficultyRequest walkDifficultyRequest)
         {
             // Implicit Validation with FluentValidation
@@ -68,6 +73,7 @@ namespace DenmarkExcursionsAPI.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> UpdateWalkDifficultyAsync(Guid id, UpdateWalkDifficultyRequest updateWalkDifficultyRequest)
         {
             // Validate
@@ -96,6 +102,7 @@ namespace DenmarkExcursionsAPI.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> DeleteWalkDifficulty(Guid id)
         {
             var walkDifficulty = await _walkDifficultyRepository.DeleteAsync(id);
